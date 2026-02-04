@@ -4,12 +4,14 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Pawn.h"
-#include "Components/SphereComponent.h"
-#include "Camera/CameraComponent.h"
-#include "GameFramework/SpringArmComponent.h"
-#include "Components/StaticMeshComponent.h"
+class USphereComponent;
+class USpringArmComponent;
+class UCameraComponent;
+class UStaticMeshComponent;
+
 
 #include "AAWSpaceShip.generated.h" //All includes have to go before this directive
+
 
 
 UCLASS()
@@ -33,6 +35,10 @@ private:
 	int AltitudeDirection = 0;	// -1 = down, 1 = up, 0 = none
 	int  TurnDirection = 0;      // -1 = left, 1 = right, 0 = none
 
+	//For angling ship during turns
+	float CurrentRoll = 0;
+	float CurrentPitch = 0;
+
 	// Input handler method declarations
 	void OnThrustPressed();
 	void OnThrustReleased();
@@ -51,19 +57,19 @@ protected:
 
 	// Sphere component
 	UPROPERTY(VisibleAnywhere)
-	USphereComponent* SphereComponent;
+	TObjectPtr<USphereComponent> SphereComponent;
 
 	//Camera Component
 	UPROPERTY(VisibleAnywhere)
-	UCameraComponent* Camera;
+	TObjectPtr<UCameraComponent> Camera;
 
 	//Camera boom
 	UPROPERTY(VisibleAnywhere)
-	USpringArmComponent* SpringArm;
+	TObjectPtr<USpringArmComponent> SpringArm;
 
 	//Static mesh
 	UPROPERTY(VisibleAnywhere)
-	UStaticMeshComponent* TheShip;
+	TObjectPtr<UStaticMeshComponent> TheShip;
 
 	//The maximum speed: 
 	//We've made this editable from within the Unreal Editor
@@ -100,6 +106,31 @@ protected:
 	//In the Editor you will find these in the details panel under a "Movement" category
 	UPROPERTY(EditAnywhere, Category = "Movement")
 	float RotationSpeed = 30.0f;
+
+	//The Max Roll Angle: 
+	//We've made this editable from within the Unreal Editor
+	//In the Editor you will find these in the details panel under a "Movement" category
+	UPROPERTY(EditAnywhere, Category = "Roll")
+	float MaxRollAngle = 40.0f;
+
+	//How fast ship rolls when turning: 
+	//We've made this editable from within the Unreal Editor
+	//In the Editor you will find these in the details panel under a "Movement" category
+	UPROPERTY(EditAnywhere, Category = "Roll")
+	float RollSpeed = 1.5f;
+
+	//Max ship pitch angle:
+	//We've made this editable from within the Unreal Editor
+	//In the Editor you will find these in the details panel under a "Movement" category
+	UPROPERTY(EditAnywhere, Category = "Roll")
+	float MaxPitchAngle = 40.0f;
+	
+	//How fast ship pitches when ascending/descending
+	//We've made this editable from within the Unreal Editor
+	//In the Editor you will find these in the details panel under a "Movement" category
+	UPROPERTY(EditAnywhere, Category = "Roll")
+	float PitchSpeed = 1.5f;
+		
 
 
 

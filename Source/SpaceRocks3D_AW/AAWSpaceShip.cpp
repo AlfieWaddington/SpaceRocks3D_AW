@@ -3,6 +3,12 @@
 
 #include "AAWSpaceShip.h"
 
+#include "Components/SphereComponent.h"
+#include "Camera/CameraComponent.h"
+#include "GameFramework/SpringArmComponent.h"
+#include "Components/StaticMeshComponent.h"
+
+
 // Sets default values
 AAAWSpaceShip::AAAWSpaceShip()
 
@@ -56,6 +62,7 @@ void AAAWSpaceShip::Tick(float DeltaTime)
 	//Set the accelration to zero at the start of each frame
 	Acceleration = FVector3d(0.0f, 0.0f, 0.0f);
 
+
 	// Turn (rotate around the Z axis - Yaw) the ship if A or D is held
 	if (TurnDirection != 0)
 	{
@@ -64,13 +71,33 @@ void AAAWSpaceShip::Tick(float DeltaTime)
 		SetActorRotation(Rotation);
 	}
 
-	// Turn (rotate around the Y axis - Pitch) the ship if UpArrow or DownArrow is held
+	// Calculate target roll based on turn direction
+	float targetRoll = TurnDirection * MaxRollAngle;
+	// Smoothly interpolate current roll toward target roll
+	CurrentRoll = FMath::FInterpTo(CurrentRoll, targetRoll, DeltaTime, RollSpeed);
+	//Set the roll (rotation around the x axis) of the actor Rotation 
+	FRotator rotation = GetActorRotation();
+	rotation.Roll = CurrentRoll;
+	SetActorRotation(rotation);
+
+
+	// Ascend/Descend the ship if UpArrow or DownArrow is held
 	if (AltitudeDirection != 0)
 	{
 		FVector3d UpVector = GetActorUpVector(); //Get the upward direction of the ship
 		//Multiply the UpVector by the direction (based on the up/down keys) and by the Altitude Thrust strength (which is tunable in the editor)
 		Acceleration = Acceleration + UpVector * AltitudeDirection * AltitudeThrustStrength;
 	}
+
+	// Calculate target pitch based on up/down direction
+	float targetPitch = AltitudeDirection * MaxPitchAngle;
+	// Smoothly interpolate current pitch toward target pitch
+	CurrentPitch = FMath::FInterpTo(CurrentPitch, targetPitch, DeltaTime, PitchSpeed);
+	//Set the pitch (rotation around the y axis) of the actor Rotation 
+	rotation = GetActorRotation();
+	rotation.Pitch = CurrentPitch;
+	SetActorRotation(rotation);
+
 
 	// Calculate and add forward acceleration if thrusting
 	if (bIsThrusting)
@@ -109,19 +136,20 @@ void AAAWSpaceShip::SetupPlayerInputComponent(UInputComponent* PlayerInputCompon
 {
 
 	//When you override a method from the Parent class always call the parents implementation to get the default behaviour
-	Super::SetupPlayerInputComponent(PlayerInputComponent);
+	APawn::SetupPlayerInputComponent(PlayerInputComponent);
+
 
 	// Bind W key for thrust
 	PlayerInputComponent->BindKey(EKeys::W, IE_Pressed, this, &AAAWSpaceShip::OnThrustPressed);
 	PlayerInputComponent->BindKey(EKeys::W, IE_Released, this, &AAAWSpaceShip::OnThrustReleased);
 
 	// Bind A and D keys for turning
-	PlayerInputComponent->BindKey(EKeys::A, IE_Pressed, this, &AAAWSpaceShip::OnTurnLeftPressed);
-	PlayerInputComponent->BindKey(EKeys::D, IE_Pressed, this, &AAAWSpaceShip::OnTurnRightPressed);
+	PlayerInputComponent->BindKey(EKeys::Left, IE_Pressed, this, &AAAWSpaceShip::OnTurnLeftPressed);
+	PlayerInputComponent->BindKey(EKeys::Right, IE_Pressed, this, &AAAWSpaceShip::OnTurnRightPressed);
 
 	// Stop turning when A or D is released
-	PlayerInputComponent->BindKey(EKeys::A, IE_Released, this, &AAAWSpaceShip::OnTurnReleased);
-	PlayerInputComponent->BindKey(EKeys::D, IE_Released, this, &AAAWSpaceShip::OnTurnReleased);
+	PlayerInputComponent->BindKey(EKeys::Left, IE_Released, this, &AAAWSpaceShip::OnTurnReleased);
+	PlayerInputComponent->BindKey(EKeys::Right, IE_Released, this, &AAAWSpaceShip::OnTurnReleased);
 
 	// Bind S key for break
 	PlayerInputComponent->BindKey(EKeys::S, IE_Released, this, &AAAWSpaceShip::OnBrakePressed);
@@ -188,8 +216,9 @@ void AAAWSpaceShip::OnTurnRightPressed()
 
 void AAAWSpaceShip::OnTurnReleased()
 {
-	TurnDirection = 0;
 
+
+	TurnDirection = 0;
 }
 
 void AAAWSpaceShip::OnBrakePressed()
