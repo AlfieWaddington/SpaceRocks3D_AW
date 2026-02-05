@@ -4,7 +4,12 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+
+class UBoxComponent;
+class  UProjectileMovementComponent;
+
 #include "AAWProjectile.generated.h"
+
 
 UCLASS()
 class SPACEROCKS3D_AW_API AAAWProjectile : public AActor
@@ -18,6 +23,14 @@ public:
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+
+	//Collision Box
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<UBoxComponent> CollisionBox;
+
+	//The projectile movement component
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<UProjectileMovementComponent> ProjectileMovement;
 
 public:	
 	// Called every frame

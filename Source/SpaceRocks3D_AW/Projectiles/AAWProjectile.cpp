@@ -1,13 +1,23 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "Projectiles/AAWProjectile.h"
+#include "AAWProjectile.h"
+#include "Components\BoxComponent.h"
+#include "GameFramework\ProjectileMovementComponent.h"
 
 // Sets default values
 AAAWProjectile::AAAWProjectile()
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
+
+	CollisionBox = CreateDefaultSubobject<UBoxComponent>(TEXT("The Collision Box Component"));
+	SetRootComponent(CollisionBox);
+
+	ProjectileMovement = CreateDefaultSubobject<UProjectileMovementComponent>(TEXT("The projectile movement component"));
+	ProjectileMovement->bRotationFollowsVelocity = true;
+	ProjectileMovement->InitialSpeed = 1000.0f;
+	ProjectileMovement->MaxSpeed = 1000.0f;
 
 }
 
