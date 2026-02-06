@@ -13,6 +13,7 @@ AAAWProjectile::AAAWProjectile()
 
 	CollisionBox = CreateDefaultSubobject<UBoxComponent>(TEXT("The Collision Box Component"));
 	SetRootComponent(CollisionBox);
+	CollisionBox->SetCollisionProfileName(TEXT("Projectile"));
 
 	ProjectileMovement = CreateDefaultSubobject<UProjectileMovementComponent>(TEXT("The projectile movement component"));
 	ProjectileMovement->bRotationFollowsVelocity = true;
