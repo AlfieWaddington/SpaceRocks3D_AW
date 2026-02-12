@@ -6,9 +6,15 @@
 #include "GameFramework/Actor.h"
 
 class UBoxComponent;
-class  UProjectileMovementComponent;
+class UProjectileMovementComponent;
+class UDamageType;
+class UNiagaraComponent;
+class USoundBase;
+class UAudioComponent;
+class UNiagaraSystem;
 
 #include "AAWProjectile.generated.h"
+
 
 
 UCLASS()
@@ -32,6 +38,10 @@ protected:
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<UProjectileMovementComponent> ProjectileMovement;
 
+	UPROPERTY(EditDefaultsOnly, Category="Damage")
+	TSubclassOf<UDamageType> DamageTypeClass;
+
+
 	UFUNCTION()
 	void OnHit(
 		UPrimitiveComponent* HitComp,	   // This is the projectile's own collision component (e.g. the CollisionBox)
@@ -40,6 +50,18 @@ protected:
 		FVector NormalImpulse,			     // The force of the collision — useful if you want to apply knockback or bounce
 		const FHitResult& Hit			       // A treasure chest of collision details: exact location, surface normal, etc.			
 	);
+
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<UNiagaraComponent> Tracer;
+
+	UPROPERTY(EditAnywhere, Category="Combat")
+	TObjectPtr<UNiagaraSystem> ExplosionParticle;
+
+	UPROPERTY(EditAnywhere, Category = "Combat")
+	TObjectPtr<USoundBase> ExplosionSound;
+
+	UPROPERTY(EditAnywhere, Category="Combat")
+	TObjectPtr<USoundBase> FireSound;
 
 public:	
 	// Called every frame

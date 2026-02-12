@@ -9,6 +9,9 @@
 #include "Components/StaticMeshComponent.h"
 #include "Projectiles/AAWProjectile.h"
 #include "Engine/StaticMeshSocket.h"
+#include "Components/AudioComponent.h"
+#include "NiagaraComponent.h"
+#include "NiagaraFunctionLibrary.h"
 
 
 // Sets default values
@@ -165,8 +168,9 @@ void AAAWSpaceShip::SetupPlayerInputComponent(UInputComponent* PlayerInputCompon
 	PlayerInputComponent->BindKey(EKeys::Up, IE_Released, this, &AAAWSpaceShip::OnAltitudeReleased);
 	PlayerInputComponent->BindKey(EKeys::Down, IE_Released, this, &AAAWSpaceShip::OnAltitudeReleased);
 
-	// Bind Space key for shoot
-	PlayerInputComponent->BindKey(EKeys::SpaceBar, IE_Pressed, this, &AAAWSpaceShip::OnFirePressed);
+	// Bind Q and E keys for shooting
+	PlayerInputComponent->BindKey(EKeys::Q, IE_Pressed, this, &AAAWSpaceShip::OnFire1Pressed);
+	PlayerInputComponent->BindKey(EKeys::E, IE_Pressed, this, &AAAWSpaceShip::OnFire2Pressed);
 
 }
 
@@ -192,11 +196,17 @@ void AAAWSpaceShip::OnThrustPressed()
 	}
 	bIsThrusting = true;
 
+	EngineSound->FadeIn(0.5);
+	EngineTrail->Activate();
+
+
 }
 
 void AAAWSpaceShip::OnThrustReleased()
 {
 	bIsThrusting = false;
+	EngineSound->FadeOut(0.2,0.5);
+	EngineTrail->Deactivate();
 }
 
 void AAAWSpaceShip::OnTurnLeftPressed()
@@ -262,7 +272,17 @@ void AAAWSpaceShip::OnAltitudeReleased()
 
 }
 
-void AAAWSpaceShip::OnFirePressed()
+void AAAWSpaceShip::OnFire1Pressed()
+{
+	OnFire(LeftGunSocketName);
+}
+
+void AAAWSpaceShip::OnFire2Pressed()
+{
+	OnFire(RightGunSocketName);
+}
+
+void AAAWSpaceShip::OnFire(const FName& SocketName)
 {
 
 	// Verify a Projectile class was assigned in the Editor 
@@ -271,15 +291,15 @@ void AAAWSpaceShip::OnFirePressed()
 	{
 		FVector SpawnLocation;
 		// Try to find the socket named "LeftGun" on the ship’s static mesh
-		const UStaticMeshSocket* LeftGunSocket = TheShip->GetSocketByName(LeftGunSocketName);
+		const UStaticMeshSocket* Socket = TheShip->GetSocketByName(SocketName);
 		// Check if the socket was found
-		if (LeftGunSocket) {
+		if (Socket) {
 			// Create a Transform to store the location and rotation of the socket
 			FTransform SocketTransform;
 
 			// Get the world space transform (position, rotation, scale) of the socket
 			// store it in SocketTransform
-			LeftGunSocket->GetSocketTransform(SocketTransform, TheShip);
+			Socket->GetSocketTransform(SocketTransform, TheShip);
 			SpawnLocation = SocketTransform.GetLocation();							// Get the socket location
 		}
 		else
@@ -287,7 +307,7 @@ void AAAWSpaceShip::OnFirePressed()
 			SpawnLocation = GetActorLocation() + GetActorForwardVector() * 2000;   //the ship's current location + a bit
 		}
 
-		
+
 
 
 		// Get a reference to the current game world
@@ -310,6 +330,7 @@ void AAAWSpaceShip::OnFirePressed()
 				SpawnParameters                                        // Pass our custom rules into the spawn function
 			);
 		}
+
 	}
 
 }

@@ -10,7 +10,8 @@ class USpringArmComponent;
 class UCameraComponent;
 class UStaticMeshComponent;
 class AAAWProjectile;
-
+class UNiagaraComponent;
+class UAudioComponent;
 
 #include "AAWSpaceShip.generated.h" //All includes have to go before this directive
 
@@ -52,7 +53,9 @@ private:
 	void OnAscendPressed();
 	void OnDescendPressed();
 	void OnAltitudeReleased();
-	void OnFirePressed();
+	void OnFire1Pressed();
+	void OnFire2Pressed();
+	void OnFire(const FName& SocketName);
 
 protected:
 	// Called when the game starts or when spawned
@@ -146,6 +149,11 @@ protected:
 	UPROPERTY(EditAnywhere, Category = "Combat")
 	TSubclassOf<AAAWProjectile> ProjectileClass;
 
+	UPROPERTY(EditAnywhere, Category = "MovementFX")
+	TObjectPtr<UNiagaraComponent> EngineTrail;
+
+	UPROPERTY(EditAnywhere, Category = "MovementFX")
+	TObjectPtr<UAudioComponent> EngineSound;
 
 public:	
 	// Called every frame
