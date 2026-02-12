@@ -20,6 +20,8 @@ AAAWProjectile::AAAWProjectile()
 	ProjectileMovement->InitialSpeed = 1000.0f;
 	ProjectileMovement->MaxSpeed = 1000.0f;
 
+	InitialLifeSpan = 12.0f;
+
 }
 
 // Called when the game starts or when spawned
@@ -29,10 +31,34 @@ void AAAWProjectile::BeginPlay()
 	
 }
 
+void AAAWProjectile::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
+{
+
+
+
+}
+
 // Called every frame
 void AAAWProjectile::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+}
+
+void AAAWProjectile::PostInitializeComponents()
+{
+
+	Super::PostInitializeComponents();
+
+	//Bind the OnHit Method to the OnComponentHit delegate 
+	CollisionBox->OnComponentHit.AddDynamic(this, &AAAWProjectile::OnHit);
+
+	// Safety check: Make sure we have a collider and an owner (Instigator)
+	if (CollisionBox && GetInstigator())
+	{
+		// Tell our collider to ignore the ship that fired us
+		CollisionBox->IgnoreActorWhenMoving(GetInstigator(), true);
+	}
 
 }
 

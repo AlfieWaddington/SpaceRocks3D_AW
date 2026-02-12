@@ -7,6 +7,8 @@
 #include "Camera/CameraComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Components/StaticMeshComponent.h"
+#include "Projectiles/AAWProjectile.h"
+#include "Engine/StaticMeshSocket.h"
 
 
 // Sets default values
@@ -163,6 +165,9 @@ void AAAWSpaceShip::SetupPlayerInputComponent(UInputComponent* PlayerInputCompon
 	PlayerInputComponent->BindKey(EKeys::Up, IE_Released, this, &AAAWSpaceShip::OnAltitudeReleased);
 	PlayerInputComponent->BindKey(EKeys::Down, IE_Released, this, &AAAWSpaceShip::OnAltitudeReleased);
 
+	// Bind Space key for shoot
+	PlayerInputComponent->BindKey(EKeys::SpaceBar, IE_Pressed, this, &AAAWSpaceShip::OnFirePressed);
+
 }
 
 void AAAWSpaceShip::SetInputEnabled(bool bIsEnabled)
@@ -254,5 +259,57 @@ void AAAWSpaceShip::OnDescendPressed()
 void AAAWSpaceShip::OnAltitudeReleased()
 {
 	AltitudeDirection = 0;
+
+}
+
+void AAAWSpaceShip::OnFirePressed()
+{
+
+	// Verify a Projectile class was assigned in the Editor 
+	// if no class is assigned we can't spawn anything
+	if (ProjectileClass)
+	{
+		FVector SpawnLocation;
+		// Try to find the socket named "LeftGun" on the ship’s static mesh
+		const UStaticMeshSocket* LeftGunSocket = TheShip->GetSocketByName(LeftGunSocketName);
+		// Check if the socket was found
+		if (LeftGunSocket) {
+			// Create a Transform to store the location and rotation of the socket
+			FTransform SocketTransform;
+
+			// Get the world space transform (position, rotation, scale) of the socket
+			// store it in SocketTransform
+			LeftGunSocket->GetSocketTransform(SocketTransform, TheShip);
+			SpawnLocation = SocketTransform.GetLocation();							// Get the socket location
+		}
+		else
+		{
+			SpawnLocation = GetActorLocation() + GetActorForwardVector() * 2000;   //the ship's current location + a bit
+		}
+
+		
+
+
+		// Get a reference to the current game world
+		UWorld* World = GetWorld();
+		//Check to make sure World is not null
+		if (World)
+		{
+			// Configure some spawning rules :
+			FActorSpawnParameters SpawnParameters;
+			// Identify this ship as the 'Instigator' (responsible for the damage dealt by the projectile).
+			SpawnParameters.Instigator = this;
+			// Ensure the projectile spawns even if it's currently overlapping another object.
+			SpawnParameters.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+
+			// Instantiate the Projectile:
+			World->SpawnActor<AAAWProjectile>(
+				ProjectileClass,                                       // The specific type to spawn. (set in the editor)
+				SpawnLocation,										   // Where to spawn it (the ship's current location + a bit)
+				GetActorRotation(),                                    // Matches the ship's current orientation.
+				SpawnParameters                                        // Pass our custom rules into the spawn function
+			);
+		}
+	}
 
 }

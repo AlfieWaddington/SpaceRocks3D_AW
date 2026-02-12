@@ -4,10 +4,12 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Pawn.h"
+
 class USphereComponent;
 class USpringArmComponent;
 class UCameraComponent;
 class UStaticMeshComponent;
+class AAAWProjectile;
 
 
 #include "AAWSpaceShip.generated.h" //All includes have to go before this directive
@@ -50,6 +52,7 @@ private:
 	void OnAscendPressed();
 	void OnDescendPressed();
 	void OnAltitudeReleased();
+	void OnFirePressed();
 
 protected:
 	// Called when the game starts or when spawned
@@ -70,6 +73,14 @@ protected:
 	//Static mesh
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<UStaticMeshComponent> TheShip;
+
+	//Name of socket for left gun
+	UPROPERTY(VisibleAnywhere, Category="Combat")
+	FName LeftGunSocketName = "GunLeft";
+
+	//Name of socket for right gun
+	UPROPERTY(VisibleAnywhere, Category = "Combat")
+	FName RightGunSocketName = "GunRight";
 
 	//The maximum speed: 
 	//We've made this editable from within the Unreal Editor
@@ -131,7 +142,9 @@ protected:
 	UPROPERTY(EditAnywhere, Category = "Roll")
 	float PitchSpeed = 1.5f;
 		
-
+	//The class to use to spawn a projectile
+	UPROPERTY(EditAnywhere, Category = "Combat")
+	TSubclassOf<AAAWProjectile> ProjectileClass;
 
 
 public:	
