@@ -50,6 +50,15 @@ AAAWSpaceShip::AAAWSpaceShip()
 
 	//Automatically Possess the Player Controller
 	AutoPossessPlayer = EAutoReceiveInput::Player0; //We only have 1 player and it's Player0
+
+
+	EngineSound = CreateDefaultSubobject<UAudioComponent>(TEXT("The engine noise"));
+	EngineSound->SetupAttachment(RootComponent);
+
+	EngineTrail = CreateDefaultSubobject<UNiagaraComponent>(TEXT("The engine particle effect"));
+	EngineTrail->SetupAttachment(RootComponent);
+	EngineTrail->Deactivate();
+
 }
 
 // Called when the game starts or when spawned
