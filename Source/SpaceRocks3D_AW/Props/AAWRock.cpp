@@ -2,7 +2,7 @@
 
 #include "Props/AAWRock.h"
 #include "Engine/StaticMesh.h"
-
+#include "Kismet/KismetMathLibrary.h"
 
 // Sets default values
 AAAWRock::AAAWRock()
@@ -16,6 +16,9 @@ AAAWRock::AAAWRock()
 	RockMesh->SetSimulatePhysics(true);
 	RockMesh->SetEnableGravity(false);
 	RockMesh->SetMassScale(NAME_None, 0.1f);
+
+	// Enable collision notifications so we can respond to impacts (e.g., OnComponentHit events)
+	RockMesh->SetNotifyRigidBodyCollision(true);
 
 }
 
@@ -35,6 +38,24 @@ void AAAWRock::BeginPlay()
 	const float Scale = FMath::FRandRange(0.5, 10.0);
 	const FVector Scale3D = FVector(Scale, Scale, Scale);
 	RockMesh->SetWorldScale3D(Scale3D);
+
+
+	//Get a random unit vector for direction
+	const FVector RandomUnitVector = UKismetMathLibrary::RandomUnitVector();
+	//Get a random speed between 100 and 1000??
+	const float RandomSpeed = FMath::FRandRange(100.0f, 1000.0f);
+	//Create a velocity vector from the above
+	Velocity = RandomUnitVector * RandomSpeed;
+
+	//Create a random number between -45 and +45
+	const float RandomAngle = FMath::FRandRange(-45.0, 45.0);
+	//Use the random Angle to create a random rotation
+	AngularVelocity = FVector(RandomAngle, RandomAngle, RandomAngle);  //You can actually do this: FVector(RandomAngle);
+
+	//Use the vectors to set the physics of the rocks
+	RockMesh->SetPhysicsLinearVelocity(Velocity);
+	RockMesh->SetPhysicsAngularVelocityInDegrees(AngularVelocity);
+
 
 }
 

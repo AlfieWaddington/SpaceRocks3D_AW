@@ -8,6 +8,7 @@
 
 class UStaticMesh;
 
+
 UCLASS()
 class SPACEROCKS3D_AW_API AAAWRock : public AActor
 {
@@ -16,6 +17,16 @@ class SPACEROCKS3D_AW_API AAAWRock : public AActor
 public:	
 	// Sets default values for this actor's properties
 	AAAWRock();
+
+private:
+	//Member variables for velocity
+	FVector Velocity;
+
+	UPROPERTY(EditAnywhere, Category = "Rock Movement");
+	FVector AngularVelocity;
+
+	UPROPERTY(EditAnywhere, Category = "Rock Movement");
+	FVector Speed;
 
 protected:
 	// Called when the game starts or when spawned
