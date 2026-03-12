@@ -4,6 +4,8 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+class AAAWRock;
+
 #include "AAWRockSpawner.generated.h"
 
 UCLASS()
@@ -15,9 +17,25 @@ public:
 	// Sets default values for this actor's properties
 	AAAWRockSpawner();
 
+private:
+	void SpawnRocks();
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+
+	UPROPERTY(EditAnywhere, Category = "Rock Spawning Configuration Properties");
+	TSubclassOf<AAAWRock> Rock;
+
+	UPROPERTY(EditAnywhere, Category = "Rock Spawning Configuration Properties");
+	int RockCount;
+	
+	UPROPERTY(EditAnywhere, Category = "Rock Spawning Configuration Properties");
+	float MaxSpawnRadius;
+	
+	UPROPERTY(EditAnywhere, Category = "Rock Spawning Configuration Properties");
+	float MinSpawnRadius;
+
 
 public:	
 	// Called every frame
