@@ -8,7 +8,7 @@
 AAAWRock::AAAWRock()
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = true;
+	PrimaryActorTick.bCanEverTick = false;
 
 	RockMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("The Mesh"));
 	SetRootComponent(RockMesh);
@@ -35,7 +35,7 @@ void AAAWRock::BeginPlay()
 	}
 
 	//Choose a random scale and apply
-	const float Scale = FMath::FRandRange(0.5, 10.0);
+	const float Scale = FMath::FRandRange(RandomScaleRange.GetMin(), RandomScaleRange.GetMax());
 	const FVector Scale3D = FVector(Scale, Scale, Scale);
 	RockMesh->SetWorldScale3D(Scale3D);
 
@@ -43,12 +43,12 @@ void AAAWRock::BeginPlay()
 	//Get a random unit vector for direction
 	const FVector RandomUnitVector = UKismetMathLibrary::RandomUnitVector();
 	//Get a random speed between 100 and 1000??
-	const float RandomSpeed = FMath::FRandRange(100.0f, 1000.0f);
+	const float RandomSpeed = FMath::FRandRange(RandomSpeedRange.GetMin(),RandomSpeedRange.GetMax());
 	//Create a velocity vector from the above
 	Velocity = RandomUnitVector * RandomSpeed;
 
 	//Create a random number between -45 and +45
-	const float RandomAngle = FMath::FRandRange(-45.0, 45.0);
+	const float RandomAngle = FMath::FRandRange(RandomAngleRange.GetMin(),RandomAngleRange.GetMax());
 	//Use the random Angle to create a random rotation
 	AngularVelocity = FVector(RandomAngle, RandomAngle, RandomAngle);  //You can actually do this: FVector(RandomAngle);
 

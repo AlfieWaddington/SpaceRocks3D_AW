@@ -28,13 +28,16 @@ protected:
 	TSubclassOf<AAAWRock> Rock;
 
 	UPROPERTY(EditAnywhere, Category = "Rock Spawning Configuration Properties");
-	int RockCount;
+	int RockCount = 500;
+
 	
 	UPROPERTY(EditAnywhere, Category = "Rock Spawning Configuration Properties");
-	float MaxSpawnRadius;
+	float MaxSpawnRadius = 2500;
 	
 	UPROPERTY(EditAnywhere, Category = "Rock Spawning Configuration Properties");
-	float MinSpawnRadius;
+	float MinSpawnRadius = 500;
+
+ 
 
 
 public:	

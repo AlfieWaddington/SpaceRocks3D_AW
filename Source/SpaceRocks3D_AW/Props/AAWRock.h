@@ -40,6 +40,18 @@ protected:
 	UPROPERTY(EditAnywhere, Category = "Rock Properties")
 	TArray<TObjectPtr<UStaticMesh>> RockMeshes;
 
+	//Range of possible scales the rocks can have
+	UPROPERTY(EditAnywhere, Category = "Rock Spawning Configuration Properties");
+	FVector2D RandomScaleRange = { 0.5,10.0 };
+
+	//Range of possible speeds the rocks can have
+	UPROPERTY(EditAnywhere, Category = "Rock Spawning Configuration Properties");
+	FVector2D RandomSpeedRange = { 100.0f,1000.0f };
+
+	//Range of starting angles the rocks can have
+	UPROPERTY(EditAnywhere, Category = "Rock Spawning Configuration Properties");
+	FVector2D RandomAngleRange = { -45.0f,45.0f };
+
 
 public:	
 	// Called every frame

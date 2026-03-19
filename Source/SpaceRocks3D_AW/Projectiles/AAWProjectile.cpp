@@ -24,8 +24,8 @@ AAAWProjectile::AAAWProjectile()
 
 	ProjectileMovement = CreateDefaultSubobject<UProjectileMovementComponent>(TEXT("The projectile movement component"));
 	ProjectileMovement->bRotationFollowsVelocity = true;
-	ProjectileMovement->InitialSpeed = 1000.0f;
-	ProjectileMovement->MaxSpeed = 1000.0f;
+	ProjectileMovement->InitialSpeed = 2000.0f;
+	ProjectileMovement->MaxSpeed = 10000.0f;
 
 	InitialLifeSpan = 12.0f;
 
