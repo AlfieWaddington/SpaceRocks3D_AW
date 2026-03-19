@@ -59,6 +59,19 @@ void AAAWRock::BeginPlay()
 
 }
 
+void AAAWRock::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
+{
+
+
+	if (OtherActor->ActorHasTag("Projectile")) {
+		this->Destroy();
+	}
+
+
+
+
+}
+
 // Called every frame
 void AAAWRock::Tick(float DeltaTime)
 {
@@ -66,3 +79,12 @@ void AAAWRock::Tick(float DeltaTime)
 
 }
 
+void AAAWRock::PostInitializeComponents()
+{
+
+	Super::PostInitializeComponents();
+
+	//Bind the OnHit Method to the OnComponentHit delegate 
+	RockMesh->OnComponentHit.AddDynamic(this, &AAAWRock::OnHit);
+
+}

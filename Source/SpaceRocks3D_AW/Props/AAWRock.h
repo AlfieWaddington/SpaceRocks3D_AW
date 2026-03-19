@@ -32,6 +32,15 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
+	UFUNCTION()
+	void OnHit(
+		UPrimitiveComponent* HitComp,	   // This is the rock's own collision component (e.g. the CollisionBox)
+		AActor* OtherActor,				       // The actor that we collided with (could be a Projectile, Wall, Enemy, etc.)
+		UPrimitiveComponent* OtherComp,	 // The specific component on the other actor that we hit (like their collision or mesh)
+		FVector NormalImpulse,			     // The force of the collision — useful if you want to apply knockback or bounce
+		const FHitResult& Hit			       // A treasure chest of collision details: exact location, surface normal, etc.			
+	);
+
 	//Static mesh
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<UStaticMeshComponent> RockMesh;
@@ -56,5 +65,8 @@ protected:
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
+
+	//Once the object is initialized this is called - useful for wiring up the collision response
+	virtual void PostInitializeComponents() override;
 
 };

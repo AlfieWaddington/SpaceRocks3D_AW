@@ -63,11 +63,15 @@ protected:
 	UPROPERTY(EditAnywhere, Category="Combat")
 	TObjectPtr<USoundBase> FireSound;
 
+	UPROPERTY(VisibleAnywhere, Category = "Tags")
+	FName ProjectileTag = (TEXT("Projectile"));
+
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
 	//Once the object is initialized this is called - useful for wiring up the collision response
 	virtual void PostInitializeComponents() override;
+
 
 };
