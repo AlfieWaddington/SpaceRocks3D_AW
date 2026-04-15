@@ -3,6 +3,7 @@
 #include "Props/AAWRock.h"
 #include "Engine/StaticMesh.h"
 #include "Kismet/KismetMathLibrary.h"
+#include "Kismet/GameplayStatics.h"
 
 // Sets default values
 AAAWRock::AAAWRock()
@@ -63,12 +64,24 @@ void AAAWRock::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiv
 {
 
 
+
+
+	// Convert the projectile's rotation into a direction vector to indicate where the force came from
+	FVector HitDirection = GetActorRotation().Vector();
+
+	UGameplayStatics::ApplyPointDamage(
+		OtherActor,                 // The Actor that will receive the damage (the victim)
+		50.0f,                      // The amount of damage to apply to the OtherActor
+		HitDirection,               // The direction the damage is coming from (useful for knockback)
+		Hit,                        // The FHitResult containing exact impact data (location, normal, etc.)
+		GetInstigatorController(),  // The Controller responsible for the damage (useful for kill tracking)
+		this,                       // The Actor actually causing the damage (the projectile itself)
+		DamageTypeClass             // The class defining the "type" of damage (e.g., Fire, Explosive, Kinetic etc)
+	);
+
 	if (OtherActor->ActorHasTag("Projectile")) {
 		this->Destroy();
 	}
-
-
-
 
 }
 

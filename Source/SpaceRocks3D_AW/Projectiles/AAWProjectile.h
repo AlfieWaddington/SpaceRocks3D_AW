@@ -63,8 +63,7 @@ protected:
 	UPROPERTY(EditAnywhere, Category="Combat")
 	TObjectPtr<USoundBase> FireSound;
 
-	UPROPERTY(VisibleAnywhere, Category = "Tags")
-	FName ProjectileTag = (TEXT("Projectile"));
+
 
 public:	
 	// Called every frame
