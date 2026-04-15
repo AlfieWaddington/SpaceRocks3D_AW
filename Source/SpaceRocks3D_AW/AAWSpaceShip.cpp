@@ -26,6 +26,8 @@ AAAWSpaceShip::AAAWSpaceShip()
 	SphereComponent = CreateDefaultSubobject<USphereComponent>(TEXT("A Sphere Component"));      
 	SetRootComponent(SphereComponent);
 	SphereComponent->SetSphereRadius(1500.0f);
+	SphereComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	
 
 	// Create the USpringArmComponent and attach it to the root component,
 	// this means that its transform is relative to the root component 
@@ -47,6 +49,10 @@ AAAWSpaceShip::AAAWSpaceShip()
 	// this means that its transform is relative to the spring arm
 	TheShip = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("The Mesh"));
 	TheShip->SetupAttachment(RootComponent);
+	//SetCollisionProfile for default behaviour
+	TheShip->SetCollisionProfileName(TEXT("Spaceship"));
+	// Enable collision notifications so we can respond to impacts (e.g., OnComponentHit events)
+	TheShip->SetNotifyRigidBodyCollision(true);
 
 	//Automatically Possess the Player Controller
 	AutoPossessPlayer = EAutoReceiveInput::Player0; //We only have 1 player and it's Player0
@@ -194,6 +200,19 @@ void AAAWSpaceShip::printSpeed()
 	FString vel = FString::FromInt((int)Velocity.Size());
 	FString out = speedOut + vel;
 	GEngine->AddOnScreenDebugMessage(0, 1.0f, FColor(1, 1, 1, 255), out);
+}
+
+float AAAWSpaceShip::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
+{
+
+	//Call the Super class implementation and store the damage value returned
+	float ActualDamage = Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
+
+	//Use a UE_LOG to print the actual damage.
+	UE_LOG(LogTemp, Display, TEXT("Taking damage: %f"),ActualDamage);
+
+	return ActualDamage;
+
 }
 
 void AAAWSpaceShip::OnThrustPressed()

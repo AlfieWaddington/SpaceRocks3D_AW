@@ -64,6 +64,14 @@ protected:
 	UPROPERTY(EditAnywhere, Category = "Rock Spawning Configuration Properties");
 	FVector2D RandomAngleRange = { -45.0f,45.0f };
 
+	// Define the minimum baseline damage a rock will deal regardless of size (Damage = BaseDamage + (RockMass * DamageScale))
+	UPROPERTY(EditAnywhere, Category = "Damage")
+	float BaseDamage = 10.0f;
+
+	//Define how much the scale of the rock will determine the damage (Damage = BaseDamage + (RockMass * DamageScale))
+	UPROPERTY(EditAnywhere, Category = "Damage")
+	float DamageScale = 0.1f;
+
 
 public:	
 	// Called every frame

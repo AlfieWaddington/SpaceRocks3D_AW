@@ -63,21 +63,29 @@ void AAAWRock::BeginPlay()
 void AAAWRock::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
 {
 
+	if (OtherActor->ActorHasTag("Spaceship")) {
 
+		// Convert the projectile's rotation into a direction vector to indicate where the force came from
+		FVector HitDirection = GetActorRotation().Vector();
 
+		// Retrieve the physical mass of the rock component (larger scale = higher mass)
+		const float RockMass = HitComp->GetMass();
 
-	// Convert the projectile's rotation into a direction vector to indicate where the force came from
-	FVector HitDirection = GetActorRotation().Vector();
+		// Calculate final damage: Start with base and add a fraction of the mass 
+		// so heavier rocks deal significantly more damage. (Could the fraction be exposed to the editor)
+		const float ScaledDamage = BaseDamage + (RockMass * DamageScale);
 
-	UGameplayStatics::ApplyPointDamage(
-		OtherActor,                 // The Actor that will receive the damage (the victim)
-		50.0f,                      // The amount of damage to apply to the OtherActor
-		HitDirection,               // The direction the damage is coming from (useful for knockback)
-		Hit,                        // The FHitResult containing exact impact data (location, normal, etc.)
-		GetInstigatorController(),  // The Controller responsible for the damage (useful for kill tracking)
-		this,                       // The Actor actually causing the damage (the projectile itself)
-		DamageTypeClass             // The class defining the "type" of damage (e.g., Fire, Explosive, Kinetic etc)
-	);
+		UGameplayStatics::ApplyPointDamage(
+			OtherActor,                 // The Actor that will receive the damage (the victim)
+			ScaledDamage,                      // The amount of damage to apply to the OtherActor
+			HitDirection,               // The direction the damage is coming from (useful for knockback)
+			Hit,                        // The FHitResult containing exact impact data (location, normal, etc.)
+			GetInstigatorController(),  // The Controller responsible for the damage (useful for kill tracking)
+			this,                       // The Actor actually causing the damage (the projectile itself)
+			DamageTypeClass             // The class defining the "type" of damage (e.g., Fire, Explosive, Kinetic etc)
+		);
+	}
+
 
 	if (OtherActor->ActorHasTag("Projectile")) {
 		this->Destroy();

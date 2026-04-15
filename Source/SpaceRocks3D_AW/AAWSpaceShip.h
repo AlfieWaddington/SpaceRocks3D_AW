@@ -57,6 +57,11 @@ private:
 	void OnFire2Pressed();
 	void OnFire(const FName& SocketName);
 
+	UPROPERTY(EditAnywhere, Category="Player Stats")
+	float MaxHealth = 100.0f;
+
+	float Health = 0;
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -166,5 +171,8 @@ public:
 	void SetInputEnabled(bool bIsEnabled);
 
 	void printSpeed();
+
+	virtual float TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser) override;
+
 
 };
