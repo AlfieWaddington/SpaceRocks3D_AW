@@ -24,6 +24,8 @@ private:
 	// This will hold the instance of the custom HUD we've written
 	AAWHUD* TheHUD;
 
+
+
 	int Lives = 0;
 
 	UPROPERTY(EditAnywhere, Category = "Player Stats")
@@ -35,6 +37,8 @@ protected:
 	virtual void BeginPlay() override;
 
 public:
+	// Called every frame
+	virtual void Tick(float DeltaTime) override;
 
 	void SetHUDHealth(float Health, float MaxHealth);
 
@@ -42,6 +46,7 @@ public:
 
 	void SetHUDLives(float Lives);
 
+	void SetHUDSpeed(float Speed, float MaxSpeed);
 
 	AAWPlayerController();
 };

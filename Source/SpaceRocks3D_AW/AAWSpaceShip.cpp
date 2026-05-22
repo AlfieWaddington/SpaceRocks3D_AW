@@ -245,6 +245,18 @@ const float AAAWSpaceShip::GetMaxHealth()
 	return MaxHealth;
 }
 
+const float AAAWSpaceShip::GetSpeed()
+{
+	FVector t_Vel = this->GetVelocity();
+	float speed = t_Vel.Length();
+	return speed;
+}
+
+const float AAAWSpaceShip::GetMaxSpeed()
+{
+	return MaxSpeed;
+}
+
 void AAAWSpaceShip::SetHealth(float _input)
 {
 	if (_input < 0) {

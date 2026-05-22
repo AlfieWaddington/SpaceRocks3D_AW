@@ -57,4 +57,8 @@ public:
 	void UpdateHealthBar(float Health, float MaxHealth);
 
 	void UpdateLivesDisplay(float NumLives);
+
+	void UpdateSpeedometer(float Speed, float MaxSpeed);
+
+
 };

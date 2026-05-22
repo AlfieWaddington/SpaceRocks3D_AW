@@ -55,3 +55,16 @@ void UAWUserWidget::UpdateLivesDisplay(float NumLives)
 	}//EndElse
 
 }//UpdateLivesDisplay
+
+
+void UAWUserWidget::UpdateSpeedometer(float Speed, float MaxSpeed)
+{
+
+	// If the widgets exist, update them with the current health values
+	if (Speedometer)
+	{
+		Speedometer->SetPercent(Speed / MaxSpeed); // Update the progress bar
+	}
+
+}//UpdateSpeedometer
+

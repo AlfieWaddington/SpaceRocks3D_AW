@@ -21,6 +21,12 @@ void AAWPlayerController::BeginPlay()
 
 }
 
+void AAWPlayerController::Tick(float DeltaTime)
+{
+	AAAWSpaceShip* SpaceShip = Cast<AAAWSpaceShip>(GetPawn());
+	SetHUDSpeed(SpaceShip->GetSpeed(), SpaceShip->GetMaxSpeed());
+}
+
 void AAWPlayerController::SetHUDHealth(float Health, float MaxHealth)
 {
 	// ToDo: If we didn't manage to retrieve the HUD in BeginPlay() i.e it == nullptr, because of timing issues.  [DONE]
@@ -90,6 +96,24 @@ void AAWPlayerController::SetHUDLives(float NumLives)
 	{
 		// Update the Health Bar on the PlayerOvelay
 		TheHUD->PlayerOverlay->UpdateLivesDisplay(NumLives);
+	}
+
+}
+
+void AAWPlayerController::SetHUDSpeed(float Speed, float MaxSpeed)
+{
+	// ToDo: If we didn't manage to retrieve the HUD in BeginPlay() i.e it == nullptr, because of timing issues.  [DONE]
+	// Try the cast again. Note: Just being safe here.
+	if (TheHUD == nullptr)
+	{
+		TheHUD = Cast<AAWHUD>(GetHUD());
+	}
+
+	// If both the HUD and the PlayerOverlay are valid, proceed
+	if (TheHUD && TheHUD->PlayerOverlay)
+	{
+		// Update the Health Bar on the PlayerOvelay
+		TheHUD->PlayerOverlay->UpdateSpeedometer(Speed, MaxSpeed);
 	}
 
 }

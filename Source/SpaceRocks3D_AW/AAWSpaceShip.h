@@ -37,7 +37,7 @@ private:
 	bool bIsThrusting = false;
 	bool bIsBraking = false;
 	int AltitudeDirection = 0;	// -1 = down, 1 = up, 0 = none
-	int  TurnDirection = 0;      // -1 = left, 1 = right, 0 = none
+	int TurnDirection = 0;      // -1 = left, 1 = right, 0 = none
 
 	//For angling ship during turns
 	float CurrentRoll = 0;
@@ -184,6 +184,9 @@ public:
 	virtual float TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser) override;
 
 	const float GetMaxHealth();
+
+	const float GetSpeed();
+	const float GetMaxSpeed();
 
 	void SetHealth(float _input);
 
