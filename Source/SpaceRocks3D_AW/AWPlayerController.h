@@ -7,6 +7,7 @@
 #include "AWPlayerController.generated.h"
 
 class AAWHUD;
+class AAAWSpaceShip;
 
 /**
  * 
@@ -23,6 +24,11 @@ private:
 	// This will hold the instance of the custom HUD we've written
 	AAWHUD* TheHUD;
 
+	int Lives = 0;
+
+	UPROPERTY(EditAnywhere, Category = "Player Stats")
+	int MaxLives = 3;
+
 protected:
 
 	// Called when the game starts or when spawned
@@ -32,8 +38,10 @@ public:
 
 	void SetHUDHealth(float Health, float MaxHealth);
 
-	
+	void LoseLife();
+
+	void SetHUDLives(float Lives);
 
 
-
+	AAWPlayerController();
 };

@@ -12,6 +12,7 @@ class UStaticMeshComponent;
 class AAAWProjectile;
 class UNiagaraComponent;
 class UAudioComponent;
+class AAWPlayerController;
 
 #include "AAWSpaceShip.generated.h" //All includes have to go before this directive
 
@@ -62,6 +63,11 @@ private:
 
 	float Health = 0;
 
+	UPROPERTY(EditAnywhere, Category="Combat")
+	float DamageMultiplier = 1.0f;
+
+	AAWPlayerController* PlayerController;
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -81,6 +87,9 @@ protected:
 	//Static mesh
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<UStaticMeshComponent> TheShip;
+
+	UPROPERTY(EditAnywhere, Category = "Respawn")
+	float RespawnTimer = 2.0f;
 
 	//Name of socket for left gun
 	UPROPERTY(VisibleAnywhere, Category="Combat")
@@ -174,5 +183,12 @@ public:
 
 	virtual float TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser) override;
 
+	const float GetMaxHealth();
+
+	void SetHealth(float _input);
+
+	void DisableOnDeath();
+	void EnableOnRegen();
+	void Regenerate();
 
 };

@@ -12,6 +12,7 @@
 #include "Components/AudioComponent.h"
 #include "NiagaraComponent.h"
 #include "NiagaraFunctionLibrary.h"
+#include "AWPlayerController.h"
 
 
 // Sets default values
@@ -54,9 +55,6 @@ AAAWSpaceShip::AAAWSpaceShip()
 	// Enable collision notifications so we can respond to impacts (e.g., OnComponentHit events)
 	TheShip->SetNotifyRigidBodyCollision(true);
 
-	//Automatically Possess the Player Controller
-	AutoPossessPlayer = EAutoReceiveInput::Player0; //We only have 1 player and it's Player0
-
 
 	EngineSound = CreateDefaultSubobject<UAudioComponent>(TEXT("The engine noise"));
 	EngineSound->SetupAttachment(RootComponent);
@@ -72,6 +70,23 @@ void AAAWSpaceShip::BeginPlay()
 {
 	Super::BeginPlay();
 	
+	//Set Health to MaxHealth 
+	Health = MaxHealth;
+
+	// Attempt to cast the generic 'PlayerController' to our custom player controller class 
+	// This is needed because the Controller variable that is inherrited by the SpaceShip from the Pawn class is of type AController*, 
+	// which doesn’t know about our custom methods e.g. SetHUDHealth(Health, MaxHealth)
+	PlayerController = Cast<AAWPlayerController>(GetController());
+
+	// If the cast was successful (i.e., the controller is actually an ASR3DPlayerController)
+	if (PlayerController)
+	{
+		// Call the custom method we defined on ASR3DPlayerController to update the HUD with the player's current and max health
+		PlayerController->SetHUDHealth(Health, MaxHealth);
+	}
+
+	EngineTrail->Deactivate();
+
 }
 
 // Called every frame
@@ -208,10 +223,78 @@ float AAAWSpaceShip::TakeDamage(float DamageAmount, FDamageEvent const& DamageEv
 	//Call the Super class implementation and store the damage value returned
 	float ActualDamage = Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
 
+	float t_ScaledDamage = ActualDamage * DamageMultiplier;
+	float t_NewHealth = Health - t_ScaledDamage;
+
+	SetHealth(t_NewHealth);
+
 	//Use a UE_LOG to print the actual damage.
 	UE_LOG(LogTemp, Display, TEXT("Taking damage: %f"),ActualDamage);
+	PlayerController->SetHUDHealth(Health, MaxHealth);
+
+	if (Health <= 0) {
+		PlayerController->LoseLife();
+	}
 
 	return ActualDamage;
+
+}
+
+const float AAAWSpaceShip::GetMaxHealth()
+{
+	return MaxHealth;
+}
+
+void AAAWSpaceShip::SetHealth(float _input)
+{
+	if (_input < 0) {
+		_input = 0;
+	}
+
+	if (_input > MaxHealth) {
+		_input = MaxHealth;
+	}
+
+	Health = _input;
+}
+
+void AAAWSpaceShip::DisableOnDeath()
+{
+	TheShip->SetVisibility(false, false);
+	this->SetActorEnableCollision(false);
+	SetInputEnabled(false);
+
+	EngineSound->FadeOut(0.2, 0.5);
+	EngineTrail->Deactivate();
+	
+	PlayerController->SetHUDHealth(Health, MaxHealth);
+}
+
+void AAAWSpaceShip::EnableOnRegen()
+{
+	SetHealth(GetMaxHealth());
+
+	TheShip->SetVisibility(true, false);
+	this->SetActorEnableCollision(true);
+	SetInputEnabled(true);
+	PlayerController->SetHUDHealth(Health, MaxHealth);
+
+
+}
+
+void AAAWSpaceShip::Regenerate()
+{
+	DisableOnDeath();
+
+	//Delay using a 2.0f second timer The call a method
+	FTimerHandle UnusedHandle;
+	GetWorldTimerManager().SetTimer(
+		UnusedHandle,                      // Think of this as The "Receipt"
+		this,                              // The Target Object                              
+		&AAAWSpaceShip::EnableOnRegen,      // A reference to the Method to Call     
+		RespawnTimer,                      // How long to wait (Seconds)
+		false                              // Should it loop?
+	);
 
 }
 
