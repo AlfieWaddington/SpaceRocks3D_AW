@@ -50,5 +50,7 @@ public:
 
 	void SetHUDSpeed(float Speed, float MaxSpeed);
 
+	void SetHUDScore(int Points);
+
 	AAWPlayerController();
 };

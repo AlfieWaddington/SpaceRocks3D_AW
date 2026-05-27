@@ -3,6 +3,7 @@
 #include "Props/AAWRock.h"
 #include "Engine/StaticMesh.h"
 #include "Kismet/KismetMathLibrary.h"
+#include "AWPlayerController.h"
 #include "Kismet/GameplayStatics.h"
 
 // Sets default values
@@ -102,7 +103,8 @@ void AAAWRock::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiv
 		if (SpeedScore > 50) SpeedScore = 50;
 
 		int finalScore = SizeScore + SpeedScore;
-		GetWorld()->GetFirstPlayerController();
+		AAWPlayerController* Controller = Cast<AAWPlayerController>(GetWorld()->GetFirstPlayerController());
+		Controller->SetHUDScore(finalScore);
 
 	}
 

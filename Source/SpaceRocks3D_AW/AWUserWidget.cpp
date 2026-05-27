@@ -68,3 +68,20 @@ void UAWUserWidget::UpdateSpeedometer(float Speed, float MaxSpeed)
 
 }//UpdateSpeedometer
 
+
+void UAWUserWidget::UpdateScoreDisplay(int points)
+{
+
+	FString toDisplay = FString::FromInt(points);
+	FString ScoreOut = FString(TEXT("Score: "));
+	FString out = ScoreOut + toDisplay;
+
+	if (Score)
+	{
+		Score->SetText(FText::FromString(out));
+	}
+
+
+}//UpdateScoreDisplay
+
+

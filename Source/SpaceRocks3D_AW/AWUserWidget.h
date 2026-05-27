@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
 #include "Components/HorizontalBox.h"
+#include "Components/TextBlock.h"
 #include "AWUserWidget.generated.h"
 
 class UProgressBar;
@@ -52,6 +53,10 @@ protected:
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UProgressBar> Speedometer;
 
+	//This variable is bound to a TextBlock named "Score" in WBP_PlayerOverview
+	UPROPERTY (meta = (BindWidget))
+	TObjectPtr<UTextBlock> Score;
+
 public:
 
 	void UpdateHealthBar(float Health, float MaxHealth);
@@ -60,5 +65,6 @@ public:
 
 	void UpdateSpeedometer(float Speed, float MaxSpeed);
 
+	void UpdateScoreDisplay(int points);
 
 };

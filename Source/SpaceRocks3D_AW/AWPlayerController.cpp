@@ -119,6 +119,26 @@ void AAWPlayerController::SetHUDSpeed(float Speed, float MaxSpeed)
 
 }
 
+void AAWPlayerController::SetHUDScore(int Points)
+{
+	Score += Points;
+
+
+
+	if (TheHUD == nullptr)
+	{
+		TheHUD = Cast<AAWHUD>(GetHUD());
+	}
+
+	// If both the HUD and the PlayerOverlay are valid, proceed
+	if (TheHUD && TheHUD->PlayerOverlay)
+	{
+		// Update the Speedometer on the PlayerOvelay
+		TheHUD->PlayerOverlay->UpdateScoreDisplay(Score);
+	}
+
+}
+
 AAWPlayerController::AAWPlayerController()
 {
 

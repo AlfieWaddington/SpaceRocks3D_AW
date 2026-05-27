@@ -7,7 +7,7 @@
 #include "AAWRock.generated.h"
 
 class UStaticMesh;
-
+class AAWPlayerController;
 
 UCLASS()
 class SPACEROCKS3D_AW_API AAAWRock : public AActor
