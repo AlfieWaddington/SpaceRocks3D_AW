@@ -15,16 +15,17 @@ void AAWPlayerController::BeginPlay()
 	// ToDo: Use GetHUD() to try to get and store a reference to our custom HUD   [DONE]
 	// Note: Use a cast to your custom HUD because GetHUD() returns an AHUD type  [DONE]
 	TheHUD = Cast<AAWHUD>(GetHUD());
+	TheShip = Cast<AAAWSpaceShip>(GetPawn());
 
 	Lives = MaxLives;
 	SetHUDLives(Lives);
 
 }
 
-void AAWPlayerController::Tick(float DeltaTime)
+void AAWPlayerController::Tick(float DeltaTime) 
 {
-	AAAWSpaceShip* SpaceShip = Cast<AAAWSpaceShip>(GetPawn());
-	SetHUDSpeed(SpaceShip->GetSpeed(), SpaceShip->GetMaxSpeed());
+	
+	SetHUDSpeed(TheShip->GetSpeed(), TheShip->GetMaxSpeed());
 }
 
 void AAWPlayerController::SetHUDHealth(float Health, float MaxHealth)
@@ -112,7 +113,7 @@ void AAWPlayerController::SetHUDSpeed(float Speed, float MaxSpeed)
 	// If both the HUD and the PlayerOverlay are valid, proceed
 	if (TheHUD && TheHUD->PlayerOverlay)
 	{
-		// Update the Health Bar on the PlayerOvelay
+		// Update the Speedometer on the PlayerOvelay
 		TheHUD->PlayerOverlay->UpdateSpeedometer(Speed, MaxSpeed);
 	}
 

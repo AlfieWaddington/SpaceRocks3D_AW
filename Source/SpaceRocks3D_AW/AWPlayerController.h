@@ -23,13 +23,15 @@ private:
 
 	// This will hold the instance of the custom HUD we've written
 	AAWHUD* TheHUD;
-
+	AAAWSpaceShip* TheShip;
 
 
 	int Lives = 0;
 
 	UPROPERTY(EditAnywhere, Category = "Player Stats")
 	int MaxLives = 3;
+
+	int Score = 0;
 
 protected:
 

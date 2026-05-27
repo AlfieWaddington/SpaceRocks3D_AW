@@ -159,7 +159,8 @@ void AAAWSpaceShip::Tick(float DeltaTime)
 		Velocity = Velocity.GetClampedToMaxSize(MaxSpeed);
 	}
 
-	printSpeed();
+	//Now handled in player controller class instead
+	//printSpeed();
 
 	// Move the ship using the current velocity
 	AddActorWorldOffset(Velocity * DeltaTime, true);
@@ -247,9 +248,9 @@ const float AAAWSpaceShip::GetMaxHealth()
 
 const float AAAWSpaceShip::GetSpeed()
 {
-	FVector t_Vel = this->GetVelocity();
-	float speed = t_Vel.Length();
-	return speed;
+
+
+	return Velocity.Size();
 }
 
 const float AAAWSpaceShip::GetMaxSpeed()

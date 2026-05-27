@@ -89,6 +89,21 @@ void AAAWRock::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiv
 
 	if (OtherActor->ActorHasTag("Projectile")) {
 		this->Destroy();
+
+
+		int SizeScore = 50;
+		SizeScore = SizeScore - (this->GetActorScale().X * 5);
+
+		int SpeedScore = 0;
+		float speed = this->Velocity.Size();
+		SpeedScore = ((speed - 100) / (1000 - 100)) * 50;
+
+		if (SpeedScore < 0) SpeedScore = 0;
+		if (SpeedScore > 50) SpeedScore = 50;
+
+		int finalScore = SizeScore + SpeedScore;
+		GetWorld()->GetFirstPlayerController();
+
 	}
 
 }
