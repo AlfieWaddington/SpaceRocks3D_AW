@@ -12,7 +12,10 @@
 #include "Components/AudioComponent.h"
 #include "NiagaraComponent.h"
 #include "NiagaraFunctionLibrary.h"
+#include "NiagaraSystem.h"
+#include "Kismet\GameplayStatics.h"
 #include "AWPlayerController.h"
+#include "Attributes/AWAttributeComponent.h"
 
 
 // Sets default values
@@ -55,6 +58,8 @@ AAAWSpaceShip::AAAWSpaceShip()
 	// Enable collision notifications so we can respond to impacts (e.g., OnComponentHit events)
 	TheShip->SetNotifyRigidBodyCollision(true);
 
+	HealthAttribute = CreateDefaultSubobject<UAWAttributeComponent>(TEXT("The player's health"));
+	
 
 	EngineSound = CreateDefaultSubobject<UAudioComponent>(TEXT("The engine noise"));
 	EngineSound->SetupAttachment(RootComponent);
@@ -228,6 +233,7 @@ float AAAWSpaceShip::TakeDamage(float DamageAmount, FDamageEvent const& DamageEv
 	float t_NewHealth = Health - t_ScaledDamage;
 
 	SetHealth(t_NewHealth);
+	HealthAttribute->UpdateHealth(-t_ScaledDamage);
 
 	//Use a UE_LOG to print the actual damage.
 	UE_LOG(LogTemp, Display, TEXT("Taking damage: %f"),ActualDamage);
@@ -279,6 +285,11 @@ void AAAWSpaceShip::DisableOnDeath()
 
 	EngineSound->FadeOut(0.2, 0.5);
 	EngineTrail->Deactivate();
+
+	if (ExplosionParticle && ExplosionSound) {
+		UNiagaraFunctionLibrary::SpawnSystemAtLocation(this, ExplosionParticle, this->GetActorLocation());
+		UGameplayStatics::SpawnSoundAtLocation(this, ExplosionSound, this->GetActorLocation());
+	}
 	
 	PlayerController->SetHUDHealth(Health, MaxHealth);
 }

@@ -13,6 +13,8 @@ class AAAWProjectile;
 class UNiagaraComponent;
 class UAudioComponent;
 class AAWPlayerController;
+class UNiagaraSystem;
+class UAWAttributeComponent;
 
 #include "AAWSpaceShip.generated.h" //All includes have to go before this directive
 
@@ -88,6 +90,9 @@ protected:
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<UStaticMeshComponent> TheShip;
 
+	UPROPERTY(EditAnywhere, Category="Player Stats")
+	TObjectPtr<UAWAttributeComponent> HealthAttribute;
+
 	UPROPERTY(EditAnywhere, Category = "Respawn")
 	float RespawnTimer = 2.0f;
 
@@ -98,6 +103,12 @@ protected:
 	//Name of socket for right gun
 	UPROPERTY(VisibleAnywhere, Category = "Combat")
 	FName RightGunSocketName = "GunRight";
+
+	UPROPERTY(EditAnywhere, Category = "Death")
+	TObjectPtr<UNiagaraSystem> ExplosionParticle;
+
+	UPROPERTY(EditAnywhere, Category = "Death")
+	TObjectPtr<USoundBase> ExplosionSound;
 
 	//The maximum speed: 
 	//We've made this editable from within the Unreal Editor
